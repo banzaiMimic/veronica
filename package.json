@@ -1,0 +1,15 @@
+{
+  "name": "veronica-js",
+  "version": "1.0.0",
+  "description": "custom dev scaffolding for node and react",
+  "main": "src/index.js",
+  "repository": "git@github.com:dr-mimic/veronica.git",
+  "author": "dr-mimic",
+  "license": "MIT",
+  "dependencies": {
+    "caporal": "^1.4.0",
+    "colors": "^1.4.0",
+    "prompt": "^1.1.0",
+    "shelljs": "^0.8.4"
+  }
+}
