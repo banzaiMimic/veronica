@@ -97,9 +97,12 @@ const create = ({
         console.log(`replacing ${makeUpdate} with ${makeUpdateStr}`)
 
         shell.sed('-i', `${actionUpdate}`, actionUpdateStr, filename)
+        shell.sed('-i', `${actionUpdate}`, actionUpdateStr, filename)
         shell.sed('-i', `${fullUpdate}`, fullUpdateStr, filename)
         shell.sed('-i', `${fullUpdate}`, fullUpdateStr, filename)
         shell.sed('-i', `${makeUpdate}`, makeUpdateStr, filename)
+        shell.sed('-i', `${makeUpdate}`, makeUpdateStr, filename)
+        shell.sed('-i', `${actionUpdate}`, actionUpdateStr, filename)
         shell.sed('-i', `${actionUpdate}`, actionUpdateStr, filename)
 
         //getaddCart
