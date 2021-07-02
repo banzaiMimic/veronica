@@ -58,22 +58,21 @@ const create = ({
     logger.info('--filename updates complete.')
   }
 
+  const replaceFirstOccurrances = () => {
+    shell.ls('-Rl', '.').forEach(file => {
+      if (file.isFile()) {
+        Object.keys(replacements).forEach(key => {
+          shell.sed('-i', `\\[${key.toUpperCase()}\\]`, replacements[key], file.name)
+        })
+      }
+    })
+  }
+
   const replaceFileContent = () => {
     // run full replace 3 times since shelljs's sed only replaces first occurrance and global regex /g doesn't seem to work
-    shell.ls('-Rl', '.').forEach(file => {
-      if (file.isFile()) {
-        Object.keys(replacements).forEach(key => {
-          shell.sed('-i', `\\[${key.toUpperCase()}\\]`, replacements[key], file.name)
-        })
-      }
-    })
-    shell.ls('-Rl', '.').forEach(file => {
-      if (file.isFile()) {
-        Object.keys(replacements).forEach(key => {
-          shell.sed('-i', `\\[${key.toUpperCase()}\\]`, replacements[key], file.name)
-        })
-      }
-    })
+    replaceFirstOccurrances()
+    replaceFirstOccurrances()
+    replaceFirstOccurrances()
     shell.ls('-Rl', '.').forEach(file => {
       if (file.isFile()) {
         const filename = file.name
@@ -98,6 +97,7 @@ const create = ({
         console.log(`replacing ${makeUpdate} with ${makeUpdateStr}`)
 
         shell.sed('-i', `${actionUpdate}`, actionUpdateStr, filename)
+        shell.sed('-i', `${fullUpdate}`, fullUpdateStr, filename)
         shell.sed('-i', `${fullUpdate}`, fullUpdateStr, filename)
         shell.sed('-i', `${makeUpdate}`, makeUpdateStr, filename)
         shell.sed('-i', `${actionUpdate}`, actionUpdateStr, filename)
