@@ -1,37 +1,37 @@
-const make[METHOD][ACTION][ENTITY] = ({ readCart, log }) => {
-  const getReadCart = async (httpRequest) => {
-    const _id = httpRequest.params.id
+const make[METHOD][ACTION][ENTITY] = ({ [ACTION][ENTITY], log }) => {
+  const [METHOD][ACTION][ENTITY] = async (httpRequest) => { 
+    const { bodyParam } = httpRequest.body
 
-    if (!_id) {
+    if (!bodyParam) {
       return {
         statusCode: 400,
-        data: 'missing cartId param'
+        data: 'missing bodyParam param'
       }
     }
 
-    let entity
+    let result
 
     try {
-      entity = await readCart({ _id })
+      result = await [ACTION][ENTITY]({})
       return {
         statusCode: 200,
-        data: entity
+        data: result
       }
     } catch (e) {
       log.error({
-        event: 'friday | makeCart error',
+        event: '[METHOD][ACTION][ENTITY] error',
         message: e.message
       })
       return {
         statusCode: 400,
-        data: `error reading cart with _id ${_id}`
+        data: e.message
       }
     }
   }
 
   return Object.freeze({
-    getReadCart
+    [METHOD][ACTION][ENTITY]
   })
 }
 
-module.exports = makeGetReadCart
+module.exports = make[METHOD][ACTION][ENTITY]

@@ -24,7 +24,7 @@ module.exports = (args, options, logger) => {
         if (!replacements.method || !replacements.action || !replacements.entity) {
           throw new Error('all parameters must have value. if basic, post method should have add as action')
         }
-        createEndpoint({ shell, templatePath, replacementKeys, replacements, clonedPath, logger }).run()
+        createEndpoint({ fs, shell, templatePath, replacements, clonedPath, logger }).run()
         break
       default:
         break

@@ -1,4 +1,5 @@
 const create = ({
+  fs,
   shell,
   templatePath,
   replacementKeys,
@@ -13,12 +14,14 @@ const create = ({
     console.log('clonedPath', clonedPath)
     cloneTemplateFiles()
     replaceFilenames()
+    replaceFileContent()
+    cleanupFiles()
   }
 
   const capitalizeFirst = str => str[0].toUpperCase() + str.slice(1)
 
   const getFilenameUpdate = ({ filename }) => {
-    let returnStr
+    let returnStr = filename
     switch (filename) {
       case 'controllers/[method][action][entity].js':
         const actionStr = replacements.action ? capitalizeFirst(replacements.action) : ''
@@ -35,13 +38,12 @@ const create = ({
         })
         break
     }
-    console.log(`filename update for ${filename} : ${returnStr}`)
     return returnStr
   }
 
   const cloneTemplateFiles = () => {
     logger.info('Copying files...')
-    const test = shell.cp('-R', `${templatePath}/*`, clonedPath)
+    shell.cp('-R', `${templatePath}/*`, clonedPath)
     logger.info('--copy complete.')
   }
 
@@ -54,6 +56,68 @@ const create = ({
       }
     })
     logger.info('--filename updates complete.')
+  }
+
+  const replaceFileContent = () => {
+    // run full replace 3 times since shelljs's sed only replaces first occurrance and global regex /g doesn't seem to work
+    shell.ls('-Rl', '.').forEach(file => {
+      if (file.isFile()) {
+        Object.keys(replacements).forEach(key => {
+          shell.sed('-i', `\\[${key.toUpperCase()}\\]`, replacements[key], file.name)
+        })
+      }
+    })
+    shell.ls('-Rl', '.').forEach(file => {
+      if (file.isFile()) {
+        Object.keys(replacements).forEach(key => {
+          shell.sed('-i', `\\[${key.toUpperCase()}\\]`, replacements[key], file.name)
+        })
+      }
+    })
+    shell.ls('-Rl', '.').forEach(file => {
+      if (file.isFile()) {
+        const filename = file.name
+        console.log('updating filename:', filename)
+        Object.keys(replacements).forEach(key => {
+          shell.sed('-i', `\\[${key.toUpperCase()}\\]`, replacements[key], filename)
+        })
+
+        //update camelCase where needed
+        const { method, action, entity } = replacements
+        const makeUpdate = `make${method}${action}${entity}`
+        const makeUpdateStr = `make${capitalizeFirst(method)}${capitalizeFirst(action)}${capitalizeFirst(entity)}`
+
+        const actionUpdate = `${action}${entity}`
+        const actionUpdateStr = `${action}${capitalizeFirst(entity)}`
+
+        const fullUpdate = `${method}${action}${entity}`
+        const fullUpdateStr = `${method}${capitalizeFirst(action)}${capitalizeFirst(entity)}`
+        
+        console.log(`replacing ${actionUpdate} with ${actionUpdateStr}`)
+        console.log(`replacing ${fullUpdate} with ${fullUpdateStr}`)
+        console.log(`replacing ${makeUpdate} with ${makeUpdateStr}`)
+
+        shell.sed('-i', `${actionUpdate}`, actionUpdateStr, filename)
+        shell.sed('-i', `${fullUpdate}`, fullUpdateStr, filename)
+        shell.sed('-i', `${makeUpdate}`, makeUpdateStr, filename)
+        shell.sed('-i', `${actionUpdate}`, actionUpdateStr, filename)
+
+        //getaddCart
+        shell.sed('-i', `${method}${action}${capitalizeFirst(entity)}`, fullUpdateStr, filename)
+        //makegetAddCart
+        shell.sed('-i', `make${method}${capitalizeFirst(action)}${capitalizeFirst(entity)}`, makeUpdateStr, filename)
+
+      }
+    })
+    // final round is to re-update camelCase, better option would be running sed with exact match above, not sure if shelljs has that
+    // might make and exec a .sh script if needed later
+    
+  }
+
+  const cleanupFiles = () => {
+    if (fs.existsSync(`${clonedPath}/_variables.js`)) {
+      shell.rm(`${clonedPath}/_variables.js`)
+    }
   }
 
   return Object.freeze({
