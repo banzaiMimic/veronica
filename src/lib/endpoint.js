@@ -24,6 +24,9 @@ const create = ({
         const actionStr = replacements.action ? capitalizeFirst(replacements.action) : ''
         returnStr = `controllers/${replacements.method}${actionStr}${capitalizeFirst(replacements.entity)}.js`
         break
+      case 'useCases/[action][entity].js':
+        returnStr = `useCases/${replacements.action}${capitalizeFirst(replacements.entity)}.js`
+        break
       default:
         Object.keys(replacements).forEach( key => {
           if (filename.includes(`[${key}]`)){
@@ -38,7 +41,7 @@ const create = ({
 
   const cloneTemplateFiles = () => {
     logger.info('Copying files...')
-    shell.cp('-R', `${templatePath}/*`, clonedPath)
+    const test = shell.cp('-R', `${templatePath}/*`, clonedPath)
     logger.info('--copy complete.')
   }
 
@@ -47,6 +50,7 @@ const create = ({
     shell.ls('-Rl', '.').forEach(file => {
       if (file.isFile()) {
         const filenameUpdate = getFilenameUpdate({ filename: file.name })
+        shell.mv(`${clonedPath}/${file.name}`, `${clonedPath}/${filenameUpdate}`)
       }
     })
     logger.info('--filename updates complete.')

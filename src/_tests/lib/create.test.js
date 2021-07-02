@@ -1,4 +1,4 @@
-const makeCreate = require('../../lib/create')
+const makeCreate = require('../../lib/endpoint')
 
 const createDefaults = {
   templatePath: 'templatePath',
@@ -20,9 +20,14 @@ beforeAll(() => {
   create = makeCreate({...createDefaults})
 })
 
-test('getFilenameUpdate returns correct filename', () => {
+test('getFilenameUpdate returns correct filename for controllers', () => {
   let filenameUpdate = create.getFilenameUpdate({filename: 'controllers/[method][action][entity].js'})
   expect(filenameUpdate).toBe('controllers/getActCart.js')
+})
+
+test('getFilenameUpdate returns correct filename for useCasese', () => {
+  let filenameUpdate = create.getFilenameUpdate({filename: 'useCases/[action][entity].js'})
+  expect(filenameUpdate).toBe('useCases/actCart.js')
 })
 
 test('getFilenameUpdate returns correct filename with blank action', () => {

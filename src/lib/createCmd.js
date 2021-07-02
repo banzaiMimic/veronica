@@ -2,8 +2,9 @@ const prompt = require('prompt')
 const shell = require('shelljs')
 const fs = require('fs')
 const colors = require('colors/safe')
-
 prompt.message = colors.yellow('Replace')
+
+const createEndpoint = require('./endpoint')
 
 module.exports = (args, options, logger) => {
   const variant = options.variant || 'default'
@@ -11,11 +12,22 @@ module.exports = (args, options, logger) => {
   const replacementKeys = require(`${templatePath}/_variables`)
   const clonedPath = process.cwd()
 
+  console.log('args:', args)
+
   if (!fs.existsSync(templatePath)) {
     throw new Error('templatePath does not exist.')
   }
 
   prompt.start().get(replacementKeys, (e, replacements) => {
-    create({ shell, templatePath, replacementKeys, replacements, clonedPath, logger }).run()
+    switch (args.template) {
+      case 'endpoint':
+        if (!replacements.method || !replacements.action || !replacements.entity) {
+          throw new Error('all parameters must have value. if basic, post method should have add as action')
+        }
+        createEndpoint({ shell, templatePath, replacementKeys, replacements, clonedPath, logger }).run()
+        break
+      default:
+        break
+    }
   })
 }
