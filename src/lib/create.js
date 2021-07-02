@@ -1,83 +1,61 @@
-const prompt = require('prompt')
-const shell = require('shelljs')
-const fs = require('fs')
-const colors = require("colors/safe")
-
-prompt.message = colors.yellow("Replace")
-
-module.exports = (args, options, logger) => {
-  const variant = options.variant || 'default'
-  const templatePath = `${__dirname}/../templates/${args.template}/${variant}`
-  const clonedPath = process.cwd()
-
-  if (fs.existsSync(templatePath)) {
-    logger.info('Copying files…')
-    shell.cp('-R', `${templatePath}/*`, clonedPath)
-    logger.info('✔ copy complete.')
-  } else {
-    logger.error(`The requested template for ${args.template} wasn't found.`)
-    process.exit(1)
+const create = ({
+  shell,
+  templatePath,
+  replacementKeys,
+  replacements,
+  clonedPath,
+  logger
+}) => {
+  const run = () => {
+    console.log('templatePath:', templatePath)
+    console.log('replacementKeys:', replacementKeys)
+    console.log('replacements:', replacements)
+    console.log('clonedPath', clonedPath)
+    cloneTemplateFiles()
+    replaceFilenames()
   }
 
-  try {
-    const variables = require(`${templatePath}/_variables`)
+  const capitalizeFirst = str => str[0].toUpperCase() + str.slice(1)
 
-    if (fs.existsSync(`${clonedPath}/_variables.js`)) {
-      shell.rm(`${clonedPath}/_variables.js`)
-    }
-
-    logger.info('Parameters :')
-    logger.info('[method] : http method i.e. get, post, put, delete, patch')
-    logger.info('[action] : *optional action : will be placed in filename i.e. <method><action><entity>')
-    logger.info('[entity] : core object usually mapping to mongo i.e. cart')
-
-    const getFilenameUpdate = ({filename, variable}) => {
-      let returnStr = filename.replace(`[${variables[0]}]`, values[variable].toLowerCase())
-
-      let action = values[variable].toLowerCase()
-      if (action) {
-        action = action[0].toUpperCase() + action.slice(1)
-        returnStr = returnStr.replace(`[${variables[1]}]`, action)
-      }
-      let entity = values[variable].toLowerCase()
-      entity = entity[0].toUpperCase() + entity.slice(1)
-      returnStr = returnStr.replace(`[${variables[2]}]`, entity)
-      returnStr = returnStr.replace(' ', '')
-      return returnStr
-    }
-
-    const replaceFilename = ({file, values}) => {
-      try {
-        variables.forEach(variable => {
-          if (file.name.includes(`[${variable}]`)){
-            const filenameUpdate = getFilenameUpdate({filename: file.name, variable})
-            shell.mv(`${clonedPath}/${file.name}`, `${clonedPath}/${filenameUpdate}`)
+  const getFilenameUpdate = ({ filename }) => {
+    let returnStr
+    switch (filename) {
+      case 'controllers/[method][action][entity].js':
+        const actionStr = replacements.action ? capitalizeFirst(replacements.action) : ''
+        returnStr = `controllers/${replacements.method}${actionStr}${capitalizeFirst(replacements.entity)}.js`
+        break
+      default:
+        Object.keys(replacements).forEach( key => {
+          if (filename.includes(`[${key}]`)){
+            returnStr = filename.replace(`[${key}]`, `${capitalizeFirst(replacements[key])}`)
           }
         })
-      } catch(e) {
-        console.error(e.message)
-      }
+        break
     }
-
-    const replaceFileContent = ({file, values}) => {
-      variables.forEach(variable => {
-        if (!file.name.includes('[')) {
-          shell.sed('-i', `\\[${variable.toUpperCase()}\\]`, values[variable], file.name)
-        }
-      })
-    }
-
-    prompt.start().get(variables, (e, values) => {
-
-      shell.ls('-Rl', '.').forEach(file => {
-        if (file.isFile()) {
-          replaceFilename({file, values})
-          replaceFileContent({file, values})
-        }
-      })
-      logger.info('✔ Success!');
-    })
-  } catch(e) {
-    console.error(e.message)
+    console.log(`filename update for ${filename} : ${returnStr}`)
+    return returnStr
   }
+
+  const cloneTemplateFiles = () => {
+    logger.info('Copying files...')
+    shell.cp('-R', `${templatePath}/*`, clonedPath)
+    logger.info('--copy complete.')
+  }
+
+  const replaceFilenames = () => {
+    logger.info('Updating filenames...')
+    shell.ls('-Rl', '.').forEach(file => {
+      if (file.isFile()) {
+        const filenameUpdate = getFilenameUpdate({ filename: file.name })
+      }
+    })
+    logger.info('--filename updates complete.')
+  }
+
+  return Object.freeze({
+    getFilenameUpdate,
+    run
+  })
 }
+
+module.exports = create

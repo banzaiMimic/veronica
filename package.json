@@ -9,10 +9,16 @@
   "repository": "git@github.com:dr-mimic/veronica.git",
   "author": "dr-mimic",
   "license": "MIT",
+  "scripts": {
+    "test": "jest"
+  },
   "dependencies": {
     "caporal": "^1.4.0",
     "colors": "^1.4.0",
     "prompt": "^1.1.0",
     "shelljs": "^0.8.4"
+  },
+  "devDependencies": {
+    "jest": "^27.0.6"
   }
 }

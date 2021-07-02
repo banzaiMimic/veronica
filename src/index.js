@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const prog = require('caporal')
-const createCmd = require('./lib/create')
+const createCmd = require('./lib/createCmd')
 
 prog
   .version('1.0.0')
@@ -10,4 +10,4 @@ prog
   .option('--variant <variant>', 'which <variant> template to use')
   .action(createCmd)
 
-  prog.parse(process.argv)
+prog.parse(process.argv)
