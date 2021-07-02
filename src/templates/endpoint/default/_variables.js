@@ -1,3 +1,5 @@
 module.exports = [
-  'test'
+  'method',
+  'action',
+  'entity'
 ]

@@ -13,3 +13,9 @@ yarn link
 ```
 vjs create endpoint
 ```
+- [method] : http method i.e. get, post, put, delete, patch
+- [action] : *optional action : will be placed in filename i.e. <method><action><entity>
+- [entity] : core object usually mapping to mongo i.e. cart
+
+### references
+[Create Your Own Yeoman-Style Scaffolding Tool with Caporal.js](https://www.sitepoint.com/scaffolding-tool-caporal-js/)
