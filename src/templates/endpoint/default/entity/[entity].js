@@ -1,1 +1,16 @@
-// hello my name is [METHOD] my action is [ACTION] and my entity is [ENTITY]
+const buildMake[ENTITY] = ({}) => {
+  const make[ENTITY] = ({
+    param
+  }) => {
+    const new[ENTITY] = {
+      param
+    }
+    return new[ENTITY]
+  }
+
+  return Object.freeze({
+    make[ENTITY]
+  })
+}
+
+module.exports = buildMake[ENTITY]

@@ -39,5 +39,5 @@ test('getFilenameUpdate returns correct filename for [entity].js', () => {
       entity: 'booking'
     }
   }).getFilenameUpdate({filename: 'entity/[entity].js'})
-  expect(filenameUpdate).toBe('entity/Booking.js')
+  expect(filenameUpdate).toBe('entity/booking.js')
 })

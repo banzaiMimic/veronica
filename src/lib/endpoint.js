@@ -30,6 +30,9 @@ const create = ({
       case 'useCases/[action][entity].js':
         returnStr = `useCases/${replacements.action}${capitalizeFirst(replacements.entity)}.js`
         break
+      case 'entity/[entity].js':
+        returnStr = `entity/${replacements.entity}.js`
+        break
       default:
         Object.keys(replacements).forEach( key => {
           if (filename.includes(`[${key}]`)){
@@ -105,10 +108,17 @@ const create = ({
         shell.sed('-i', `${actionUpdate}`, actionUpdateStr, filename)
         shell.sed('-i', `${actionUpdate}`, actionUpdateStr, filename)
 
+        shell.sed('-i', `${entity}`, capitalizeFirst(entity), filename)
+
         //getaddCart
         shell.sed('-i', `${method}${action}${capitalizeFirst(entity)}`, fullUpdateStr, filename)
+        shell.sed('-i', `./${method}${action}${capitalizeFirst(entity)}`, fullUpdateStr, filename)
         //makegetAddCart
         shell.sed('-i', `make${method}${capitalizeFirst(action)}${capitalizeFirst(entity)}`, makeUpdateStr, filename)
+        //[ENTITYLOWER]
+        console.log(`filename ${filename} replacing : require('./[ENTITYLOWER]')({}).make${entity}`)
+        shell.sed('-i', `\\[ENTITYLOWER\\]`, entity, filename)
+        shell.sed('-i', `make${entity}`, `make${capitalizeFirst(entity)}`, filename)
 
       }
     })
