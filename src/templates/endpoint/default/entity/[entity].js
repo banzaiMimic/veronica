@@ -1,9 +1,7 @@
 const buildMake[ENTITY] = ({}) => {
-  const make[ENTITY] = ({
-    param
-  }) => {
+  const make[ENTITY] = params => {
     const new[ENTITY] = {
-      param
+      ...params
     }
     return new[ENTITY]
   }

@@ -5,6 +5,7 @@ const make[ACTIONUPPER][ENTITY] = () => {
   const [ACTION][ENTITY] = async () => {
     try {
       // const someEntity = make[ENTITY]
+      return 'someData'
     } catch (e) {
       /*
         log.error({

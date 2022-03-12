@@ -1,13 +1,15 @@
 const make[METHOD][ACTION][ENTITY] = ({ [ACTION][ENTITY] }) => {
   const [METHOD][ACTION][ENTITY] = async (httpRequest) => { 
-    const { bodyParam } = httpRequest.body
+    
+    // add back in if bodyParams are required...
+    // const { bodyParam } = httpRequest.body
 
-    if (!bodyParam) {
-      return {
-        statusCode: 400,
-        data: 'missing bodyParam param'
-      }
-    }
+    // if (!bodyParam) {
+    //   return {
+    //     statusCode: 400,
+    //     data: 'missing bodyParam param'
+    //   }
+    // }
 
     let result
 
