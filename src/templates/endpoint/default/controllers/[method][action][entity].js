@@ -1,4 +1,4 @@
-const make[METHOD][ACTION][ENTITY] = ({ [ACTION][ENTITY], log }) => {
+const make[METHOD][ACTION][ENTITY] = ({ [ACTION][ENTITY] }) => {
   const [METHOD][ACTION][ENTITY] = async (httpRequest) => { 
     const { bodyParam } = httpRequest.body
 
@@ -18,10 +18,10 @@ const make[METHOD][ACTION][ENTITY] = ({ [ACTION][ENTITY], log }) => {
         data: result
       }
     } catch (e) {
-      log.error({
-        event: '[METHOD][ACTION][ENTITY] error',
-        message: e.message
-      })
+      // log.error({
+      //   event: '[METHOD][ACTION][ENTITY] error',
+      //   message: e.message
+      // })
       return {
         statusCode: 400,
         data: e.message

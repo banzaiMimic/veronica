@@ -77,6 +77,7 @@ const create = ({
     replaceFirstOccurrances()
     replaceFirstOccurrances()
     shell.ls('-Rl', '.').forEach(file => {
+
       if (file.isFile()) {
         const filename = file.name
         console.log('updating filename:', filename)
@@ -95,9 +96,9 @@ const create = ({
         const fullUpdate = `${method}${action}${entity}`
         const fullUpdateStr = `${method}${capitalizeFirst(action)}${capitalizeFirst(entity)}`
         
-        console.log(`replacing ${actionUpdate} with ${actionUpdateStr}`)
-        console.log(`replacing ${fullUpdate} with ${fullUpdateStr}`)
-        console.log(`replacing ${makeUpdate} with ${makeUpdateStr}`)
+        // console.log(`replacing ${actionUpdate} with ${actionUpdateStr}`)
+        // console.log(`replacing ${fullUpdate} with ${fullUpdateStr}`)
+        // console.log(`replacing ${makeUpdate} with ${makeUpdateStr}`)
 
         shell.sed('-i', `${actionUpdate}`, actionUpdateStr, filename)
         shell.sed('-i', `${actionUpdate}`, actionUpdateStr, filename)
@@ -112,12 +113,18 @@ const create = ({
 
         //getaddCart
         shell.sed('-i', `${method}${action}${capitalizeFirst(entity)}`, fullUpdateStr, filename)
-        shell.sed('-i', `./${method}${action}${capitalizeFirst(entity)}`, fullUpdateStr, filename)
+        shell.sed('-i', `/./${method}${action}${capitalizeFirst(entity)}`, fullUpdateStr, filename)
+
+        //bootleg fix just to make this work... we should handle all this from a .sh script (?)
+        shell.sed('-i', `z/${method}${action}${capitalizeFirst(entity)}`, `./${method}${capitalizeFirst(action)}${capitalizeFirst(entity)}`, filename)
+
         //makegetAddCart
         shell.sed('-i', `make${method}${capitalizeFirst(action)}${capitalizeFirst(entity)}`, makeUpdateStr, filename)
-        //[ENTITYLOWER]
-        console.log(`filename ${filename} replacing : require('./[ENTITYLOWER]')({}).make${entity}`)
+        //users
+        //console.log(`filename ${filename} replacing : require('./users')({}).make${entity}`)
         shell.sed('-i', `\\[ENTITYLOWER\\]`, entity, filename)
+        shell.sed('-i', `\\[ACTIONLOWER\\]`, action.toLowerCase(), filename)
+        shell.sed('-i', `\\[ACTIONUPPER\\]`, capitalizeFirst(action) , filename)
         shell.sed('-i', `make${entity}`, `make${capitalizeFirst(entity)}`, filename)
 
       }

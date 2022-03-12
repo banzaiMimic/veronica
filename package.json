@@ -6,8 +6,8 @@
   "bin": {
     "vjs": "src/index.js"
   },
-  "repository": "git@github.com:dr-mimic/veronica.git",
-  "author": "dr-mimic",
+  "repository": "git@github.com:banzaiMimic/veronica.git",
+  "author": "banzaiMimic",
   "license": "MIT",
   "scripts": {
     "test": "jest"
