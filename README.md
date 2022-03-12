@@ -18,6 +18,15 @@ vjs create endpoint
 - [method] : http method i.e. get, post, put, delete, patch
 - [action] : *optional action : will be placed in filename i.e. <method><action><entity>
 - [entity] : core object usually mapping to mongo i.e. cart
+- i.e. get | all | users
+
+### hook up route / endpoint [after scaffold]
+- find expressCallBack.js code below
+```
+const expressCallBack = require('./expressCallBack')
+const userControllers = require('./users/controllers')
+app.get('/users/get', expressCallBack(userControllers.getAllUsers))
+```
 
 ### expressCallBack
 currently you need this in order to create your route(s)
